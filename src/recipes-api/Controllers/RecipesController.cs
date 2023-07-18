@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace recipes_api.Controllers;
 
@@ -25,8 +26,7 @@ public class RecipesController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        List<Recipe> recipes = this._service.GetRecipes();
-        return Ok(recipes);
+        return Ok(this._service.GetRecipes());
     }
 
     // 2 - Sua aplicação deve ter o endpoint GET /recipe/:name
@@ -34,10 +34,9 @@ public class RecipesController : ControllerBase
     [HttpGet("{name}", Name = "GetRecipe")]
     public IActionResult Get(string name)
     {                
-        List<Recipe> recipes = this._service.GetRecipes();
-        Recipe requestedRecipe = recipes.Find(recipes => recipes.Name.ToLower() == name);
-        if (requestedRecipe != null) {
-            return Ok(requestedRecipe);
+        if(this._service.RecipeExists(name))
+        {
+            return Ok(this._service.GetRecipe(name));
         }
         return NotFound();
     }
@@ -46,20 +45,31 @@ public class RecipesController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody]Recipe recipe)
     {
-        throw new NotImplementedException();
+        this._service.AddRecipe(recipe);
+        return Created("", recipe);
     }
 
     // 4 - Sua aplicação deve ter o endpoint PUT /recipe
     [HttpPut("{name}")]
     public IActionResult Update(string name, [FromBody]Recipe recipe)
     {
-        throw new NotImplementedException();
+        if(this._service.RecipeExists(name))
+        {
+            this._service.UpdateRecipe(recipe);
+            return NoContent();
+        }
+        return BadRequest();
     }
 
     // 5 - Sua aplicação deve ter o endpoint DEL /recipe
     [HttpDelete("{name}")]
     public IActionResult Delete(string name)
     {
-        throw new NotImplementedException();
+        if(this._service.RecipeExists(name))
+        {
+            this._service.DeleteRecipe(name);
+            return NoContent();
+        }
+        return NotFound();
     }    
 }
