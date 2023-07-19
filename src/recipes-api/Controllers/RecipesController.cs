@@ -26,7 +26,7 @@ public class RecipesController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(this._service.GetRecipes());
+        return Ok(_service.GetRecipes());
     }
 
     // 2 - Sua aplicação deve ter o endpoint GET /recipe/:name
@@ -34,9 +34,9 @@ public class RecipesController : ControllerBase
     [HttpGet("{name}", Name = "GetRecipe")]
     public IActionResult Get(string name)
     {                
-        if(this._service.RecipeExists(name))
+        if(_service.RecipeExists(name))
         {
-            return Ok(this._service.GetRecipe(name));
+            return Ok(_service.GetRecipe(name));
         }
         return NotFound();
     }
@@ -45,7 +45,7 @@ public class RecipesController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody]Recipe recipe)
     {
-        this._service.AddRecipe(recipe);
+        _service.AddRecipe(recipe);
         return Created("", recipe);
     }
 
@@ -53,21 +53,22 @@ public class RecipesController : ControllerBase
     [HttpPut("{name}")]
     public IActionResult Update(string name, [FromBody]Recipe recipe)
     {
-        if(this._service.RecipeExists(name))
+        if(!_service.RecipeExists(name) | !_service.RecipeExists(recipe.Name))
         {
-            this._service.UpdateRecipe(recipe);
-            return NoContent();
+            return BadRequest();
         }
-        return BadRequest();
+
+        _service.UpdateRecipe(recipe);
+        return NoContent();
     }
 
     // 5 - Sua aplicação deve ter o endpoint DEL /recipe
     [HttpDelete("{name}")]
     public IActionResult Delete(string name)
     {
-        if(this._service.RecipeExists(name))
+        if(_service.RecipeExists(name))
         {
-            this._service.DeleteRecipe(name);
+            _service.DeleteRecipe(name);
             return NoContent();
         }
         return NotFound();

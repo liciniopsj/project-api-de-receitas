@@ -24,7 +24,7 @@ public class CommentController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody]Comment comment)
     {
-        this._service.AddComment(comment);
+        _service.AddComment(comment);
         return Created("", comment);
     }
 
@@ -32,7 +32,7 @@ public class CommentController : ControllerBase
     [HttpGet("{name}", Name = "GetComment")]
     public IActionResult Get(string name)
     {                
-        this._service.GetComments(name);  
-        return Created("", this._service.GetComments(name));                 
+        _service.GetComments(name);  
+        return Created("", _service.GetComments(name));                 
     }
 }

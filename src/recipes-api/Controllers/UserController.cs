@@ -24,9 +24,9 @@ public class UserController : ControllerBase
     [HttpGet("{email}", Name = "GetUser")]
     public IActionResult Get(string email)
     {                
-        if(this._service.UserExists(email))
+        if(_service.UserExists(email))
         {
-            return Ok(this._service.GetUser(email));
+            return Ok(_service.GetUser(email));
         }
         return NotFound();
     }
@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody]User user)
     {
-        this._service.AddUser(user);
+        _service.AddUser(user);
         return Created("", user);
     }
 
@@ -43,14 +43,14 @@ public class UserController : ControllerBase
     [HttpPut("{email}")]
     public IActionResult Update(string email, [FromBody]User user)
     {
-        if(this._service.UserExists(email))
+        if(_service.UserExists(email))
         {   
-            if(user.Email != this._service.GetUser(email).Email)
+            if(user.Email != _service.GetUser(email).Email)
             {
                 return BadRequest();
             }
 
-            this._service.UpdateUser(user);
+            _service.UpdateUser(user);
             return Ok(user);
         }
         return NotFound();
@@ -60,9 +60,9 @@ public class UserController : ControllerBase
     [HttpDelete("{email}")]
     public IActionResult Delete(string email)
     {
-        if(this._service.UserExists(email))
+        if(_service.UserExists(email))
         {
-            this._service.DeleteUser(email);
+            _service.DeleteUser(email);
             return NoContent();
         }
         return NotFound();
